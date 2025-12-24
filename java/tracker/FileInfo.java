@@ -11,66 +11,113 @@ import java.util.List;
 public class FileInfo implements Serializable {
     private static final long serialVersionUID = 2L;
 
-    private String fileName;      // Tên file
-    private long fileSize;        // Kích thước file (bytes)
-    private String peerIP;        // IP của peer sở hữu file
-    private int peerPort;         // Port của peer
-    private String fileHash;      // SHA-256 Hash để verify file
+    private String fileName; // Tên file
+    private long fileSize; // Kích thước file (bytes)
+    private String peerIP; // IP của peer sở hữu file
+    private int peerPort; // Port của peer
+    private String fileHash; // SHA-256 Hash để verify file
 
     // Các trường mới cho Multi-source và Resume
-    private int fileDbId;         // ID trong database
-    private int totalChunks;      // Tổng số chunks
-    private List<Integer> availableChunks;  // Danh sách chunks peer này có
-    private int seedCount;        // Số peer đang seed file này
+    private int fileDbId; // ID trong database
+    private int totalChunks; // Tổng số chunks
+    private List<Integer> availableChunks; // Danh sách chunks peer này có
+    private int seedCount; // Số peer đang seed file này
 
     public FileInfo(String fileName, long fileSize, String peerIP, int peerPort) {
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.peerIP = peerIP;
         this.peerPort = peerPort;
-        this.fileHash = calculateSimpleHash(fileName, fileSize);
+        this.fileHash = null; // Hash phải được set riêng bằng setFileHash() từ MD5 calculation
         this.totalChunks = (int) Math.ceil((double) fileSize / (64 * 1024));
         this.availableChunks = new ArrayList<>();
     }
 
-    private String calculateSimpleHash(String name, long size) {
-        return String.format("%08x%08x", name.hashCode(), Long.hashCode(size));
-    }
+    // ĐÃ XÓA calculateSimpleHash - không dùng nữa vì gây conflict với MD5 hash thực
 
     // Getters và Setters
-    public String getFileName() { return fileName; }
-    public void setFileName(String fileName) { this.fileName = fileName; }
+    public String getFileName() {
+        return fileName;
+    }
 
-    public long getFileSize() { return fileSize; }
-    public void setFileSize(long fileSize) { this.fileSize = fileSize; }
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-    public String getPeerIP() { return peerIP; }
-    public void setPeerIP(String peerIP) { this.peerIP = peerIP; }
+    public long getFileSize() {
+        return fileSize;
+    }
 
-    public int getPeerPort() { return peerPort; }
-    public void setPeerPort(int peerPort) { this.peerPort = peerPort; }
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
 
-    public String getFileHash() { return fileHash; }
-    public void setFileHash(String fileHash) { this.fileHash = fileHash; }
+    public String getPeerIP() {
+        return peerIP;
+    }
 
-    public int getFileDbId() { return fileDbId; }
-    public void setFileDbId(int fileDbId) { this.fileDbId = fileDbId; }
+    public void setPeerIP(String peerIP) {
+        this.peerIP = peerIP;
+    }
 
-    public int getTotalChunks() { return totalChunks; }
-    public void setTotalChunks(int totalChunks) { this.totalChunks = totalChunks; }
+    public int getPeerPort() {
+        return peerPort;
+    }
 
-    public List<Integer> getAvailableChunks() { return availableChunks; }
-    public void setAvailableChunks(List<Integer> availableChunks) { this.availableChunks = availableChunks; }
+    public void setPeerPort(int peerPort) {
+        this.peerPort = peerPort;
+    }
 
-    public int getSeedCount() { return seedCount; }
-    public void setSeedCount(int seedCount) { this.seedCount = seedCount; }
+    public String getFileHash() {
+        return fileHash;
+    }
+
+    public void setFileHash(String fileHash) {
+        this.fileHash = fileHash;
+    }
+
+    public int getFileDbId() {
+        return fileDbId;
+    }
+
+    public void setFileDbId(int fileDbId) {
+        this.fileDbId = fileDbId;
+    }
+
+    public int getTotalChunks() {
+        return totalChunks;
+    }
+
+    public void setTotalChunks(int totalChunks) {
+        this.totalChunks = totalChunks;
+    }
+
+    public List<Integer> getAvailableChunks() {
+        return availableChunks;
+    }
+
+    public void setAvailableChunks(List<Integer> availableChunks) {
+        this.availableChunks = availableChunks;
+    }
+
+    public int getSeedCount() {
+        return seedCount;
+    }
+
+    public void setSeedCount(int seedCount) {
+        this.seedCount = seedCount;
+    }
 
     // Format kích thước file cho dễ đọc
     public String getFormattedSize() {
-        if (fileSize < 1024) return fileSize + " B";
-        else if (fileSize < 1024 * 1024) return String.format("%.2f KB", fileSize / 1024.0);
-        else if (fileSize < 1024 * 1024 * 1024) return String.format("%.2f MB", fileSize / (1024.0 * 1024));
-        else return String.format("%.2f GB", fileSize / (1024.0 * 1024 * 1024));
+        if (fileSize < 1024)
+            return fileSize + " B";
+        else if (fileSize < 1024 * 1024)
+            return String.format("%.2f KB", fileSize / 1024.0);
+        else if (fileSize < 1024 * 1024 * 1024)
+            return String.format("%.2f MB", fileSize / (1024.0 * 1024));
+        else
+            return String.format("%.2f GB", fileSize / (1024.0 * 1024 * 1024));
     }
 
     @Override
