@@ -49,7 +49,11 @@ public class FileManager {
     public List<FileInfo> getSharedFileInfos(String peerIP, int peerPort) {
         List<FileInfo> list = new ArrayList<>();
         for (File file : sharedFiles.values()) {
-            list.add(new FileInfo(file.getName(), file.length(), peerIP, peerPort));
+            FileInfo info = new FileInfo(file.getName(), file.length(), peerIP, peerPort);
+            // ⭐ QUAN TRỌNG: Tính MD5 hash cho mỗi file
+            String hash = calculateFileHash(file.getName());
+            info.setFileHash(hash);
+            list.add(info);
         }
         return list;
     }
