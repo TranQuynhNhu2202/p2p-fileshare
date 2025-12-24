@@ -764,6 +764,7 @@ public class ModernPeerGUI extends JFrame {
             return;
         String keyword = searchField.getText().trim();
         List<FileInfo> results = keyword.isEmpty() ? peer.getAllAvailableFiles() : peer.search(keyword);
+        System.out.println("[GUI] searchFiles returned " + results.size() + " files from tracker/database");
         updateFileTable(results);
         log("🔍 Tìm thấy " + results.size() + " files" + (keyword.isEmpty() ? "" : " cho '" + keyword + "'"));
     }
@@ -772,6 +773,7 @@ public class ModernPeerGUI extends JFrame {
         if (peer == null)
             return;
         List<FileInfo> files = peer.getAllAvailableFiles();
+        System.out.println("[GUI] refreshFileList returned " + files.size() + " files from tracker/database");
         updateFileTable(files);
         log("🔄 Đã làm mới: " + files.size() + " files");
     }
@@ -779,12 +781,16 @@ public class ModernPeerGUI extends JFrame {
     private void updateFileTable(List<FileInfo> files) {
         tableModel.setRowCount(0);
         for (FileInfo f : files) {
+            String hashDisplay = "N/A";
+            if (f.getFileHash() != null && f.getFileHash().length() >= 8) {
+                hashDisplay = f.getFileHash().substring(0, 8) + "...";
+            }
             tableModel.addRow(new Object[] {
                     f.getFileName(),
                     f.getFormattedSize(),
                     f.getSeedCount() > 0 ? f.getSeedCount() : 1,
                     f.getPeerIP() + ":" + f.getPeerPort(),
-                    f.getFileHash().substring(0, 8) + "..."
+                    hashDisplay
             });
         }
     }
